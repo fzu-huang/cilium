@@ -177,6 +177,22 @@ func (ipam *IPAM) ConfigureAllocator() {
 		if ipam.config.IPv4Enabled() {
 			ipam.ipv4Allocator = &noOpAllocator{}
 		}
+	case ipamOption.IPAMExternal:
+		ipam.logger.Info("Initializing External IPAM")
+		v4Allocator, v6Allocator := newExternalIPAMAllocators(ExternalIPAMAllocatorParams{
+			Logger:         ipam.logger,
+			IPv4Enabled:    ipam.config.IPv4Enabled(),
+			IPv6Enabled:    ipam.config.IPv6Enabled(),
+			LocalNode:      ipam.nodeResource,
+			LocalNodeStore: ipam.localNodeStore,
+			JobGroup:       ipam.jg,
+		})
+		if ipam.config.IPv6Enabled() {
+			ipam.ipv6Allocator = v6Allocator
+		}
+		if ipam.config.IPv4Enabled() {
+			ipam.ipv4Allocator = v4Allocator
+		}
 	default:
 		logging.Fatal(ipam.logger, fmt.Sprintf("Unknown IPAM backend %s", ipam.config.IPAMMode()))
 	}

@@ -33,6 +33,13 @@ const (
 	// In this mode, Cilium CNI invokes another CNI binary (the delegated plugin) for IPAM.
 	// See https://www.cni.dev/docs/spec/#section-4-plugin-delegation
 	IPAMDelegatedPlugin = "delegated-plugin"
+
+	// IPAMExternal is the value to select the external IPAM mode.
+	// In this mode, IP allocation is delegated to an external IPAM service
+	// accessible via a Unix domain socket (default: same socket as cilium agent).
+	// The allocator calls the same REST API as the native cilium IPAM, and also
+	// syncs CiliumNode Spec.IPAM.PodCIDRs into the LocalNodeStore.
+	IPAMExternal = "external"
 )
 
 const (
